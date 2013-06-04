@@ -1,0 +1,23 @@
+1. Necesitamos Centralizar aun mas los requests ( Done! ).
+2. Un lugar para los helpers ( Done! ).
+3. Necesitamos Mejorar las URLs ( Done! ).
+4. Necesitamos mejorar la referencia a los paths y a las URLs ( Done! ).
+5. Necesitamos Organizar lo Relacionado con la database ( Done! ).
+5.1. Necesitamos remover el nombre MySQL de todas partes en el Adaptador del MySQL ( Done! ).
+5.2. Hacer un wrapper sencillo para las SQL strings ( Done! ).
+SELECT
+INSERT
+UPDATE
+DELETE
+5.3. Mejorar el queryBuilder.
+5.4. Crear el Adaptador para el MongoDB para verificar la flexibilidad del queryBuilder.
+6. Necesitamos Mejorar lo de los layouts y el manejo de las vistas ( Done! ).
+6.1. Organizar mejor el archivo "config/application.php" ( Done! ).
+6.2. Manejo de Mensajes de Error ( Done! ).
+7. Depronto explorar la posibilidad de almacenar las constantes bajo una clase "Application" que ampare todo lo relacionado con la aplicacion ( variables, settings, etc. ).
+8. Validacion de campos en los modelos.
+9. Implementamos las funciones "getLinkTag" y "getScriptTag" ? ( Done! ).
+10. Organizar todo lo necesario para subir a GitHub.
+10.1. Mejorar el "README.rdoc" file para orientar mucho mejor a la persona que quiera clonar y usar el Framework.
+
+SOLUCIONAR PROBLEMA CON EL DELETE EN EL ADAPTADOR DE MYSQL. MENSAJE ERRONIO. PARECE QUE SIEMPRE RETORNA FALSE.
