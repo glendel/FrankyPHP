@@ -14,7 +14,7 @@ Basic Framework Made With PHP For Training Purposes Based On {Ruby}[http://www.r
 
 == Getting Started
 
-NOTE : These instructions were made assuming that you already have installed and running {Git}[http://git-scm.com/], {MySQL}[http://www.mysql.com/], {PHP}[http://www.php.net/], and a server like {Apache}[http://httpd.apache.org/].
+NOTE : These instructions were made assuming that you already have installed and running {Git}[http://git-scm.com/], {MySQL}[http://www.mysql.com/], {PHP}[http://www.php.net/], and a Web server like {Apache}[http://httpd.apache.org/].
 
 Go to your {PHP}[http://www.php.net/] projects folder and clone this project :
 
