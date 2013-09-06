@@ -15,9 +15,11 @@ DELETE
 6.1. Organizar mejor el archivo "config/application.php" ( Done! ).
 6.2. Manejo de Mensajes de Error ( Done! ).
 7. Depronto explorar la posibilidad de almacenar las constantes bajo una clase "Application" que ampare todo lo relacionado con la aplicacion ( variables, settings, etc. ).
-8. Validacion de campos en los modelos.
-9. Implementamos las funciones "getLinkTag" y "getScriptTag" ? ( Done! ).
-10. Organizar todo lo necesario para subir a GitHub.
-10.1. Mejorar el "README.rdoc" file para orientar mucho mejor a la persona que quiera clonar y usar el Framework.
+8. Validacion de campos en los modelos ( Done! ).
+9. Manejo de conexion a multiples databases.
+10. Explorar la posibilidad de manejar "logs" : http://www.php.net/manual/en/function.error-log.php
+11. Implementamos las funciones "getLinkTag" y "getScriptTag" ? ( Done! ).
+12. Organizar todo lo necesario para subir a GitHub.
+12.1. Mejorar el "README.rdoc" file para orientar mucho mejor a la persona que quiera clonar y usar el Framework.
 
 SOLUCIONAR PROBLEMA CON EL DELETE EN EL ADAPTADOR DE MYSQL. MENSAJE ERRONIO. PARECE QUE SIEMPRE RETORNA FALSE.
