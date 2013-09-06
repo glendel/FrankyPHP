@@ -52,7 +52,7 @@
         redirectTo( $controller, 'show', ( 'id=' . $blog[ 'id' ] ) );
       }
       
-      setFlashMessage( 'error', 'The blog could not be created.' );
+      setFlashMessage( 'error', getErrorMessageFor( $blog, 'The blog could not be created.' ) );
       $formAction = getUrlFor( $controller, 'create' );
       setViewToRenderTo( $controller, 'new' );
     break;
@@ -73,7 +73,7 @@
         redirectTo( $controller, 'show', ( 'id=' . $id ) );
       }
       
-      setFlashMessage( 'error', 'The blog With ID "' . $id . '" could not be updated.' );
+      setFlashMessage( 'error', getErrorMessageFor( $blog, ( 'The blog With ID "' . $id . '" could not be updated.' ) ) );
       $formAction = getUrlFor( $controller, 'update', ( 'id=' . $id ) );
       setViewToRenderTo( $controller, 'edit' );
     break;

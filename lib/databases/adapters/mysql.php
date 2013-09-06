@@ -21,6 +21,7 @@
         
         // Check connection
         if ( $objMysqli->connect_errno ) {
+          // error_log(  );
           throw new Exception( "Failed Connection!<br />\nERROR " . $objMysqli->connect_errno . ' (' . $objMysqli->sqlstate . ') : ' . $objMysqli->connect_error );
         }
         
@@ -198,10 +199,22 @@
       }
       
       /**
+       * isValid
+       **/
+      public static function isValid( &$obj ) {
+        if ( !isset( $obj[ 'errors' ] ) || !is_array( $obj[ 'errors' ] ) ) { $obj[ 'errors' ] = array(); }
+        if ( !isset( $obj[ 'errors' ][ 'messages' ] ) || !is_array( $obj[ 'errors' ][ 'messages' ] ) ) { $obj[ 'errors' ][ 'messages' ] = array(); }
+        
+        return( true );
+      }
+      
+      /**
        * create
        **/
       public static function create( &$obj ) {
         if ( is_array( $obj ) ) {
+          if ( !static::isValid( $obj ) ) { return( false ); } else { unset( $obj[ 'errors' ] ); }
+          
           $fields = '';
           $Values = '';
           
@@ -227,6 +240,8 @@
        **/
       public static function update( &$obj ) {
         if ( is_array( $obj ) ) {
+          if ( !static::isValid( $obj ) ) { return( false ); } else { unset( $obj[ 'errors' ] ); }
+          
           $fieldsAndValues = '';
           
           foreach ( $obj as $field => $value ) {

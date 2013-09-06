@@ -187,6 +187,31 @@
   }
   
   /**
+   * getErrorMessageFor
+   **/
+  function getErrorMessageFor( $obj, $defaultErrorMessage = '' ) {
+    $message = '';
+    
+    if ( is_array( $obj ) && is_array( $obj[ 'errors' ] ) && is_array( $obj[ 'errors' ][ 'messages' ] ) && !empty( $obj[ 'errors' ][ 'messages' ] ) ) {
+      $message .= count( $obj[ 'errors' ][ 'messages' ] ) . ' error(s) prohibited the data from being saved.<br/><br/>';
+      $message .= 'There were problems with the following fields:<br/>';
+      $message .= '<ul>';
+      
+      foreach( $obj[ 'errors' ][ 'messages' ] as $field => $messages ) {
+        foreach( $messages as $msg ) {
+          $message .= '<li><b>' . ucwords( strtolower( $field ) ) . ':</b> ' . $msg . '</li>';
+        }
+      }
+      
+      $message .= '</ul>';
+    }
+    
+    if ( empty( $message ) ) { $message .= (string)$defaultErrorMessage; }
+    
+    return( $message );
+  }
+  
+  /**
    * setFlashMessage
    **/
   function setFlashMessage( $type, $message ) {

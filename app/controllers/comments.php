@@ -52,7 +52,7 @@
         redirectTo( $controller, 'show', ( 'id=' . $comment[ 'id' ] ) );
       }
       
-      setFlashMessage( 'error', 'The Comment could not be created.' );
+      setFlashMessage( 'error', getErrorMessageFor( $comment, 'The Comment could not be created.' ) );
       $formAction = getUrlFor( $controller, 'create' );
       setViewToRenderTo( $controller, 'new' );
     break;
@@ -73,7 +73,7 @@
         redirectTo( $controller, 'show', ( 'id=' . $id ) );
       }
       
-      setFlashMessage( 'error', 'The comment With ID "' . $id . '" could not be updated.' );
+      setFlashMessage( 'error', getErrorMessageFor( $comment, ( 'The comment With ID "' . $id . '" could not be updated.' ) ) );
       $formAction = getUrlFor( $controller, 'update', ( 'id=' . $id ) );
       setViewToRenderTo( $controller, 'edit' );
     break;

@@ -12,7 +12,7 @@
 <div class="ui-state-default ui-corner-all">
   <p>
     <span class="ui-icon ui-icon-info"></span>
-    <strong>Notice :</strong> "<?= $notice; ?>"
+    <strong>Notice :</strong> "<?php echo $notice; ?>"
   </p>
 </div>
 <?php
@@ -23,7 +23,7 @@
 <div class="ui-state-highlight ui-corner-all">
   <p>
     <span class="ui-icon ui-icon-info"></span>
-    <strong>Warning :</strong> "<?= $warning; ?>"
+    <strong>Warning :</strong> "<?php echo $warning; ?>"
   </p>
 </div>
 <?php
@@ -35,7 +35,7 @@
   <p>
     <span class="ui-icon ui-icon-alert"></span>
     <strong>Alert :</strong>
-    <?= $error; ?>
+    <?php echo $error; ?>
   </p>
 </div>
 <?php
