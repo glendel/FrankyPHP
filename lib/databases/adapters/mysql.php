@@ -50,6 +50,13 @@
       }
       
       /**
+       * getPrimaryKey
+       **/
+      public static function getPrimaryKey() {
+        return( ( ( property_exists( get_called_class(), 'primaryKey' ) ) ? static::$primaryKey : 'id' ) );
+      }
+      
+      /**
        * realEscapeString
        **/
       public static function realEscapeString( $string ) {
@@ -64,6 +71,13 @@
       }
       
       /**
+       * getEscapedPrimaryKey
+       **/
+      public static function getEscapedPrimaryKey() {
+        return( self::escape( self::getPrimaryKey() ) );
+      }
+      
+      /**
        * queryBuilder
        **/
       public static function queryBuilder( $type, $options = array() ) {
@@ -72,7 +86,8 @@
         $from = $table;
         $joins = '';
         $where = '';
-        $order = '';
+        $groupBy = '';
+        $orderBy = '';
         $limit = '';
         $sqlstr = '';
         
@@ -80,7 +95,10 @@
         if ( isset( $options[ 'from' ] ) && !empty( $options[ 'from' ] ) ) { $from = $options[ 'from' ]; }
         if ( isset( $options[ 'joins' ] ) && !empty( $options[ 'joins' ] ) ) { $joins = $options[ 'joins' ]; }
         if ( isset( $options[ 'where' ] ) && !empty( $options[ 'where' ] ) ) { $where = ( ' WHERE ' . $options[ 'where' ] ); }
-        if ( isset( $options[ 'order' ] ) && !empty( $options[ 'order' ] ) ) { $order = ( ' ORDER BY ' . $options[ 'order' ] ); }
+        if ( isset( $options[ 'order_by' ] ) && !empty( $options[ 'order_by' ] ) ) {
+          $orderBy = ( ' ORDER BY ' . $options[ 'order_by' ] );
+          $orderBy .= ( ( isset( $options[ 'order' ] ) && !empty( $options[ 'order' ] ) ) ? ( ' ' . strtoupper( $options[ 'order' ] ) ) : ' ASC' );
+        }
         if ( isset( $options[ 'limit' ] ) && !empty( $options[ 'limit' ] ) ) { $limit = ( ' LIMIT ' . $options[ 'limit' ] ); }
         
         switch( $type ) {
@@ -94,7 +112,7 @@
             $sqlstr = 'INSERT INTO ' . $table . $fields . ' VALUES ( ' . $options[ 'values' ] . ' )';
           break;
           case 'select':
-            $sqlstr = 'SELECT ' . $select . ' FROM ' . $from . $joins . $where . $order . $limit;
+            $sqlstr = 'SELECT ' . $select . ' FROM ' . $from . $joins . $where . $groupBy . $orderBy . $limit;
           break;
           case 'update':
             if ( !isset( $options[ 'set' ] ) || empty( $options[ 'set' ] ) ) { throw new Exception( 'The "set" parameter is required to build the "update" query.' ); }
@@ -159,8 +177,8 @@
       /**
        * findAll
        **/
-      public static function findAll() {
-        $sqlstr = self::queryBuilder( 'select' );
+      public static function findAll( $options = array() ) {
+        $sqlstr = self::queryBuilder( 'select', $options );
         
         return( self::query( $sqlstr ) );
       }
@@ -170,7 +188,7 @@
        **/
       public static function findById( $id ) {
         $obj = array();
-        $sqlstr = self::queryBuilder( 'select', array( 'where' => ( '`id` = ' . self::realEscapeString( $id ) ) ) );
+        $sqlstr = self::queryBuilder( 'select', array( 'where' => ( '`' . self::getEscapedPrimaryKey() . '` = ' . self::realEscapeString( $id ) ) ) );
         
         if ( $result = self::query( $sqlstr ) ) {
           $tmpObj = self::fetchAssoc( $result );
@@ -190,7 +208,7 @@
         
         if ( $result = self::query( $sqlstr ) ) {
           while ( $row = self::fetchAssoc( $result ) ) {
-            $obj[ $row[ 'Field' ] ] = '';
+            $obj[ $row[ 'Field' ] ] = $row[ 'Default' ];
           }
           self::free( $result );
         }
@@ -219,7 +237,7 @@
           $Values = '';
           
           foreach ( $obj as $field => $value ) {
-            if ( $field == 'id' ) { continue; }
+            if ( $field == self::getEscapedPrimaryKey() ) { continue; }
             $fields .= '`' . self::realEscapeString( $field ) . '`, ';
             $values .=  '"' . self::realEscapeString( $value ) . '", ';
           }
@@ -227,7 +245,7 @@
           $sqlstr = self::queryBuilder( 'insert', array( 'fields' => substr( $fields, 0, -2 ), 'values' => substr( $values, 0, -2 ) ) );
           
           if ( self::query( $sqlstr ) ) {
-            $obj[ 'id' ] = self::lastInsertedId();
+            $obj[ self::getEscapedPrimaryKey() ] = self::lastInsertedId();
             return( true );
           }
         }
@@ -238,18 +256,19 @@
       /**
        * update
        **/
-      public static function update( &$obj ) {
+      public static function update( &$obj, $where = '' ) {
         if ( is_array( $obj ) ) {
           if ( !static::isValid( $obj ) ) { return( false ); } else { unset( $obj[ 'errors' ] ); }
+          if ( empty( $where ) ) { $where = ( '`' . self::getEscapedPrimaryKey() . '` = ' . self::realEscapeString( $obj[ self::getEscapedPrimaryKey() ] ) ); }
           
           $fieldsAndValues = '';
           
           foreach ( $obj as $field => $value ) {
-            if ( $field == 'id' ) { continue; }
+            if ( $field == self::getEscapedPrimaryKey() ) { continue; }
             $fieldsAndValues .= '`' . self::realEscapeString( $field ) . '` = "' . self::realEscapeString( $value ) . '", ';
           }
           
-          $sqlstr = self::queryBuilder( 'update', array( 'set' => substr( $fieldsAndValues, 0, -2 ), 'where' => ( '`id` = ' . self::realEscapeString( $obj[ 'id' ] ) ) ) );
+          $sqlstr = self::queryBuilder( 'update', array( 'set' => substr( $fieldsAndValues, 0, -2 ), 'where' => $where ) );
           
           if ( self::query( $sqlstr ) ) {
             return( true );
@@ -264,7 +283,7 @@
        **/
       public static function destroy( &$obj ) {
         if ( is_array( $obj ) ) {
-          $sqlstr = self::queryBuilder( 'delete', array( 'where' => ( '`id` = ' . self::realEscapeString( $obj[ 'id' ] ) ) ) );
+          $sqlstr = self::queryBuilder( 'delete', array( 'where' => ( '`' . self::getEscapedPrimaryKey() . '` = ' . self::realEscapeString( $obj[ self::getEscapedPrimaryKey() ] ) ) ) );
           
           if ( self::query( $sqlstr ) ) {
             return( true );
