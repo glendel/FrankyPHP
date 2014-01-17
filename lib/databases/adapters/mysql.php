@@ -74,7 +74,7 @@
        * getEscapedPrimaryKey
        **/
       public static function getEscapedPrimaryKey() {
-        return( self::escape( self::getPrimaryKey() ) );
+        return( self::realEscapeString( self::getPrimaryKey() ) );
       }
       
       /**
