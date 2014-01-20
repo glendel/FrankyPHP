@@ -234,7 +234,7 @@
           if ( !static::isValid( $obj ) ) { return( false ); } else { unset( $obj[ 'errors' ] ); }
           
           $fields = '';
-          $Values = '';
+          $values = '';
           
           foreach ( $obj as $field => $value ) {
             if ( $field == self::getEscapedPrimaryKey() ) { continue; }
