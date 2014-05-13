@@ -95,6 +95,7 @@
         if ( isset( $options[ 'from' ] ) && !empty( $options[ 'from' ] ) ) { $from = $options[ 'from' ]; }
         if ( isset( $options[ 'joins' ] ) && !empty( $options[ 'joins' ] ) ) { $joins = $options[ 'joins' ]; }
         if ( isset( $options[ 'where' ] ) && !empty( $options[ 'where' ] ) ) { $where = ( ' WHERE ' . $options[ 'where' ] ); }
+        if ( isset( $options[ 'group_by' ] ) && !empty( $options[ 'group_by' ] ) ) { $groupBy = ( ' GROUP BY ' . $options[ 'group_by' ] ); }
         if ( isset( $options[ 'order_by' ] ) && !empty( $options[ 'order_by' ] ) ) {
           $orderBy = ( ' ORDER BY ' . $options[ 'order_by' ] );
           $orderBy .= ( ( isset( $options[ 'order' ] ) && !empty( $options[ 'order' ] ) ) ? ( ' ' . strtoupper( $options[ 'order' ] ) ) : ' ASC' );
@@ -184,11 +185,11 @@
       }
       
       /**
-       * findById
+       * findBy
        **/
-      public static function findById( $id ) {
+      public static function findBy( $field, $value ) {
         $obj = array();
-        $sqlstr = self::queryBuilder( 'select', array( 'where' => ( '`' . self::getEscapedPrimaryKey() . '` = ' . self::realEscapeString( $id ) ) ) );
+        $sqlstr = self::queryBuilder( 'select', array( 'where' => ( '`' . self::realEscapeString( $field ) . '` = "' . self::realEscapeString( $value ) . '"' ) ) );
         
         if ( $result = self::query( $sqlstr ) ) {
           $tmpObj = self::fetchAssoc( $result );
@@ -197,6 +198,13 @@
         }
         
         return( $obj );
+      }
+      
+      /**
+       * findById
+       **/
+      public static function findById( $id ) {
+        return( self::findBy( self::getPrimaryKey(), $id ) );
       }
       
       /**
@@ -254,10 +262,24 @@
       }
       
       /**
+       * assignNewValues
+       **/
+      public static function assignNewValues( &$obj, $newValues ) {
+        if ( is_array( $obj ) && is_array( $newValues ) ) {
+          if ( isset( $newValues[ self::getEscapedPrimaryKey() ] ) ) { unset( $newValues[ self::getEscapedPrimaryKey() ] ); }
+          
+          foreach( $newValues as $key => $value ) {
+            $obj[ $key ] = $value;
+          }
+        }
+      }
+      
+      /**
        * update
        **/
-      public static function update( &$obj, $where = '' ) {
-        if ( is_array( $obj ) ) {
+      public static function update( &$obj, $newValues, $where = '' ) {
+        if ( is_array( $obj ) && is_array( $newValues ) ) {
+          self::assignNewValues( $obj, $newValues );
           if ( !static::isValid( $obj ) ) { return( false ); } else { unset( $obj[ 'errors' ] ); }
           if ( empty( $where ) ) { $where = ( '`' . self::getEscapedPrimaryKey() . '` = ' . self::realEscapeString( $obj[ self::getEscapedPrimaryKey() ] ) ); }
           
