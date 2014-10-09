@@ -58,17 +58,14 @@
     break;
     case 'update':
       $id = $params[ 'id' ];
-      $oldBlog = Blog::findById( $id );
+      $blog = Blog::findById( $id );
       
-      if  ( empty( $oldBlog ) ) {
+      if  ( empty( $blog ) ) {
         setFlashMessage( 'error', 'The blog With ID "' . $id . '" does not exists.' );
         redirectTo( $controller );
       }
       
-      $blog = $params[ 'blog' ];
-      $blog[ 'id' ] = $id;
-      
-      if ( Blog::update( $blog ) ) {
+      if ( Blog::update( $blog, $params[ 'blog' ] ) ) {
         setFlashMessage( 'notice', 'The blog With ID "' . $id . '" was successfully updated.' );
         redirectTo( $controller, 'show', ( 'id=' . $id ) );
       }
