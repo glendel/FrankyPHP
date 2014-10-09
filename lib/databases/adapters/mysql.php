@@ -17,11 +17,15 @@
        * connect
        **/
       public static function connect() {
-        $objMysqli = new mysqli( DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWD, DATABASE_DBNAME );
+        $objMysqli = @new mysqli( DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWD );
         
         // Check connection
         if ( $objMysqli->connect_errno ) {
           // error_log(  );
+          $errorMessage = '<p style="color:red;">Failed Connection!</p>';
+          $errorMessage .= '<p>ERROR ' . $objMysqli->connect_errno . ' (' . @$objMysqli->sqlstate . ') : ' . $objMysqli->connect_error . '</p>';
+          $errorMessage .= '<p>Please set the "DATABASE_HOST", "DATABASE_USERNAME" and "DATABASE_PASSWD" constants in the "/config/database.php" file to valid connection credentials.</p>';
+          die( $errorMessage );
           throw new Exception( "Failed Connection!<br />\nERROR " . $objMysqli->connect_errno . ' (' . $objMysqli->sqlstate . ') : ' . $objMysqli->connect_error );
         }
         
@@ -39,7 +43,7 @@
        * dbExists
        **/
       public static function dbExists( $dbName = DATABASE_DBNAME ) {
-        $sqlstr = self::queryBuilder( 'select', array( 'select' => '`SCHEMA_NAME`', 'from' => '`information_schema`.`SCHEMATA`', 'where' => ( '`SCHEMA_NAME` = "' . $dbName . '"' ) ) );
+        $sqlstr = self::queryBuilder( 'select', array( 'select' => '`SCHEMA_NAME`', 'table' => '`information_schema`.`SCHEMATA`', 'where' => ( '`SCHEMA_NAME` = "' . $dbName . '"' ) ) );
         $result = self::query( $sqlstr );
         
         return( $result->num_rows > 0 );
@@ -50,7 +54,10 @@
        **/
       public static function selectDb( $dbName = DATABASE_DBNAME ) {
         if ( !self::dbExists( $dbName ) ) {
-          throw new Exception( 'The Database Does Not Exist!' );
+          $errorMessage = '<p style="color:red;">The Selected Database ("' . $dbName . '") Does Not Exist!</p>';
+          $errorMessage .= '<p>Please modify the "DATABASE_DBNAME" constant in the "/config/database.php" file to a valid an existing database or create the "' . $dbName . '" database.</p>';
+          die( $errorMessage );
+          throw new Exception( $errorMessage );
         }
         
         $objMysqli = self::getDbConnection();
@@ -87,7 +94,7 @@
        **/
       public static function tableExists( $tableName = '', $dbName = DATABASE_DBNAME ) {
         $tableName = ( ( empty( $tableName ) ) ? self::getTableName() : trim( $tableName ) );
-        $sqlstr = self::queryBuilder( 'select', array( 'select' => '`TABLE_NAME`', 'from' => '`information_schema`.`TABLES`', 'where' => ( '`TABLE_SCHEMA` = "' . $dbName . '" AND `TABLE_NAME` = "' . $tableName . '"' ) ) );
+        $sqlstr = self::queryBuilder( 'select', array( 'select' => '`TABLE_NAME`', 'table' => '`information_schema`.`TABLES`', 'where' => ( '`TABLE_SCHEMA` = "' . $dbName . '" AND `TABLE_NAME` = "' . $tableName . '"' ) ) );
         $result = self::query( $sqlstr );
         
         return( $result->num_rows > 0 );
@@ -347,9 +354,10 @@
       /**
        * destroy
        **/
-      public static function destroy( &$obj ) {
+      public static function destroy( &$obj, $where = '' ) {
         if ( is_array( $obj ) ) {
-          $sqlstr = self::queryBuilder( 'delete', array( 'where' => ( '`' . self::getEscapedPrimaryKey() . '` = ' . self::realEscapeString( $obj[ self::getEscapedPrimaryKey() ] ) ) ) );
+          if ( empty( $where ) ) { $where = ( '`' . self::getEscapedPrimaryKey() . '` = ' . self::realEscapeString( $obj[ self::getEscapedPrimaryKey() ] ) ); }
+          $sqlstr = self::queryBuilder( 'delete', array( 'where' => $where ) );
           
           if ( self::query( $sqlstr ) ) {
             return( true );
