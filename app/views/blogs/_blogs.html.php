@@ -8,4 +8,8 @@
     <td><a href="<?php echo getUrlFor( 'blogs', 'edit', ( 'id=' . $blog[ 'id' ] ) ); ?>">Edit</a></td>
     <td><a href="<?php echo getUrlFor( 'blogs', 'delete', ( 'id=' . $blog[ 'id' ] ) ); ?>" >Delete</a></td>
   </tr>
-<?php } ?>
+<?php
+  }
+  
+  Blog::free( $blogs );
+?>

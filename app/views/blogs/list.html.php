@@ -11,10 +11,10 @@
   <?php include( getPartialPathFor( 'blogs', 'blogs' ) ); ?>
 </table>
 <?php
-    Blog::free( $blogs );
   } else { //if no records found
     echo "No records found.";
   }
 ?>
 <br />
-<a href="<?php echo getUrlFor( 'blogs', 'new' ); ?>">New blog</a>
+<a href="<?php echo getUrlFor( 'blogs', 'new' ); ?>">New blog</a> |
+<a href="<?php echo getUrlFor( '' ); ?>">Back to Menu</a>
