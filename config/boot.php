@@ -4,6 +4,7 @@
   require_once( CONFIG_PATH . 'database.php' );
   require_once( LIB_PATH . 'databases' . PS . 'adapters' . PS . DATABASE_ADAPTER . '.php' );
   DbAdapter::connect();
+  DbAdapter::selectDb();
   require_once( CONFIG_PATH . 'routes.php' );
   require_once( CONFIG_PATH . 'application.php' );
   DbAdapter::close();
