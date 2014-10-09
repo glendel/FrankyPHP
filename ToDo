@@ -22,8 +22,11 @@ DELETE
 12. Organizar todo lo necesario para subir a GitHub ( Done! ).
 12.1. Mejorar el "README.rdoc" file para orientar mucho mejor a la persona que quiera clonar y usar el Framework.
 
-SOLUCIONAR PROBLEMA CON EL DELETE EN EL ADAPTADOR DE MYSQL. MENSAJE ERRONIO. PARECE QUE SIEMPRE RETORNA FALSE.
+SOLUCIONAR PROBLEMA CON EL DELETE EN EL ADAPTADOR DE MYSQL. MENSAJE ERRONEO. PARECE QUE SIEMPRE RETORNA FALSE ( Done! ).
 
+- Crear una Branch para FrankyPHP con Twitter Bootstrap
+- Remover todo lo relacionado con jQuery UI
 - Cargar los JavaScripts y los CSS de acuerdo a el controlador y la vista.
 - Mejorar la funcion "find_by_id" ya que no siempre las tablas tienen como "PRIMARY KEY" la columna "ID" ni como "FOREIGN KEY" la columna "table_name_id" ( Done! ).
 - Validacion de requisiciones AJAX
+- Implementar el manejo de AJAX
