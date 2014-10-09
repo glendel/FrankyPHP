@@ -44,7 +44,7 @@
           Comment::free( $comments );
         }
         
-        parent::destroy( $blog );
+        return( parent::destroy( $blog ) );
       }
     }
   }
