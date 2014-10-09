@@ -36,6 +36,39 @@
       }
       
       /**
+       * dbExists
+       **/
+      public static function dbExists( $dbName = DATABASE_DBNAME ) {
+        $sqlstr = self::queryBuilder( 'select', array( 'select' => '`SCHEMA_NAME`', 'from' => '`information_schema`.`SCHEMATA`', 'where' => ( '`SCHEMA_NAME` = "' . $dbName . '"' ) ) );
+        $result = self::query( $sqlstr );
+        
+        return( $result->num_rows > 0 );
+      }
+      
+      /**
+       * selectDb
+       **/
+      public static function selectDb( $dbName = DATABASE_DBNAME ) {
+        if ( !self::dbExists( $dbName ) ) {
+          throw new Exception( 'The Database Does Not Exist!' );
+        }
+        
+        $objMysqli = self::getDbConnection();
+        
+        $objMysqli->select_db( $dbName );
+        
+        $sqlstr = 'SELECT DATABASE() AS `dbName`';
+        
+        if ( $result = self::query( $sqlstr ) ) {
+          $obj = self::fetchAssoc( $result );
+          
+          if ( $obj[ 'dbName' ] != $dbName ) {
+            throw new Exception( "Failed Selecting Database!<br />\nERROR " . $objMysqli->errno . ' (' . $objMysqli->sqlstate . ') : ' . $objMysqli->error );
+          }
+        }
+      }
+      
+      /**
        * close
        **/
       public static function close() {
@@ -47,6 +80,17 @@
        **/
       public static function getTableName() {
         return( static::$tableName );
+      }
+      
+      /**
+       * tableExists
+       **/
+      public static function tableExists( $tableName = '', $dbName = DATABASE_DBNAME ) {
+        $tableName = ( ( empty( $tableName ) ) ? self::getTableName() : trim( $tableName ) );
+        $sqlstr = self::queryBuilder( 'select', array( 'select' => '`TABLE_NAME`', 'from' => '`information_schema`.`TABLES`', 'where' => ( '`TABLE_SCHEMA` = "' . $dbName . '" AND `TABLE_NAME` = "' . $tableName . '"' ) ) );
+        $result = self::query( $sqlstr );
+        
+        return( $result->num_rows > 0 );
       }
       
       /**
@@ -93,7 +137,7 @@
         
         if ( isset( $options[ 'select' ] ) && !empty( $options[ 'select' ] ) ) { $select = $options[ 'select' ]; }
         if ( isset( $options[ 'from' ] ) && !empty( $options[ 'from' ] ) ) { $from = $options[ 'from' ]; }
-        if ( isset( $options[ 'joins' ] ) && !empty( $options[ 'joins' ] ) ) { $joins = $options[ 'joins' ]; }
+        if ( isset( $options[ 'joins' ] ) && !empty( $options[ 'joins' ] ) ) { $joins = ( ' ' . trim( $options[ 'joins' ] ) ); }
         if ( isset( $options[ 'where' ] ) && !empty( $options[ 'where' ] ) ) { $where = ( ' WHERE ' . $options[ 'where' ] ); }
         if ( isset( $options[ 'group_by' ] ) && !empty( $options[ 'group_by' ] ) ) { $groupBy = ( ' GROUP BY ' . $options[ 'group_by' ] ); }
         if ( isset( $options[ 'order_by' ] ) && !empty( $options[ 'order_by' ] ) ) {
