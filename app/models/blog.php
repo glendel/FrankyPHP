@@ -47,4 +47,6 @@
         return( parent::destroy( $blog ) );
       }
     }
+    
+    Blog::validate();
   }

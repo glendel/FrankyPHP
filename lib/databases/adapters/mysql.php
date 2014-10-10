@@ -101,6 +101,19 @@
       }
       
       /**
+       * validate
+       **/
+      public static function validate( $tableName = '', $dbName = DATABASE_DBNAME ) {
+        $tableName = ( ( empty( $tableName ) ) ? self::getTableName() : trim( $tableName ) );
+        
+        if ( !self::tableExists( $tableName, $dbName ) ) {
+          $errorMessage = '<p style="color:red;">The selected table "' . $tableName . '" does not exist in the "' . $dbName . '" database!</p>';
+          $errorMessage .= '<p>Please create the "' . $tableName . '" table in the "' . $dbName . '" database.</p>';
+          die( $errorMessage );
+        }
+      }
+      
+      /**
        * getPrimaryKey
        **/
       public static function getPrimaryKey() {

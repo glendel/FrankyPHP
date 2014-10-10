@@ -15,4 +15,6 @@
         return( self::query( $sqlstr ) );
       }
     }
+    
+    Comment::validate();
   }
